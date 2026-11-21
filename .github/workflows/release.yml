@@ -1,0 +1,70 @@
+# Portable Windows exe: артефакт на каждый push/PR, GitHub Release на тег v*.
+name: Release
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  windows:
+    name: Build Windows portable
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release
+        run: cargo build --release --bin akp-deck
+
+      - name: Stage portable exe
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item target/release/akp-deck.exe dist/akp-deck.exe
+          $hash = (Get-FileHash dist/akp-deck.exe -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path dist/akp-deck.exe.sha256 -Value "$hash  akp-deck.exe" -NoNewline
+          Get-Item dist/akp-deck.exe | Format-List Name, Length, LastWriteTime
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: akp-deck-windows-x64
+          path: |
+            dist/akp-deck.exe
+            dist/akp-deck.exe.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/akp-deck.exe
+            dist/akp-deck.exe.sha256
+          generate_release_notes: true
+          body: |
+            ## Portable build (Windows x64)
+
+            Скачайте **akp-deck.exe** — отдельный файл, установщик не нужен.
+
+            Неофициальная утилита для панели **AKP05E**.
+
+            1. Закройте родное приложение панели (Stream Dock и т.п.)
+            2. Запустите `akp-deck.exe` (нужны права администратора)
+            3. Конфиг сохранится в `%APPDATA%\akp-deck\`

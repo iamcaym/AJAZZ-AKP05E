@@ -1,0 +1,51 @@
+[package]
+name = "akp-deck"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+winres = "0.1"
+
+[dependencies]
+anyhow = "1"
+mirajazz = "0.16"
+async-hid = { version = "0.5", features = ["tokio", "win32"] }
+futures-lite = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal", "sync"] }
+image = "0.25"
+imageproc = "0.25"
+ab_glyph = "0.2"
+sysinfo = "0.40.4"
+nvml-wrapper = "0.13.0"
+toml = "1.2.1"
+chrono = "0.4.45"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1"
+hidapi = "2.6"
+eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"] }
+windows = { version = "0.62", features = [
+    "Win32_Foundation",
+    "Win32_Devices_DeviceAndDriverInstallation",
+    "Win32_Devices_Properties",
+    "Win32_Graphics_Gdi",
+    "Win32_Media_Audio",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Memory",
+    "Win32_Security",
+    "Win32_System_Performance",
+    "Win32_System_Registry",
+    "Win32_System_Rpc",
+    "Win32_System_Threading",
+    "Win32_System_Variant",
+    "Win32_System_Wmi",
+    "Win32_UI_Shell",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"

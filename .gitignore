@@ -1,0 +1,40 @@
+# Сборка
+/target/
+/target-*/
+**/*.rs.bk
+
+# Локальные бинарники и артефакты в корне
+/*.exe
+/*.pdb
+/*.dll
+/*.exp
+/*.lib
+preview.png
+preview_nogpu.png
+
+# IDE / ОС / Cursor
+.idea/
+.vscode/
+.cursor/
+*.user
+.DS_Store
+Thumbs.db
+
+# Заметки и хронология проекта (локально, не в git)
+CHRONOLOGY.md
+BETA_PLAN.md
+SPEC.md
+notes/
+
+# Отдельные тесты и пробы (локально)
+/tests/
+src/bin/probe.rs
+src/bin/preview.rs
+src/bin/ui-preview.rs
+src/bin/diag.rs
+
+# Секреты / локальный env
+.env
+.env.*
+*.pem
+credentials.json
