@@ -285,6 +285,14 @@ async fn run(
         .await
         .map_err(|e| anyhow!("установка яркости: {e}"))?;
 
+    // Стираем boot-логотип Ajazz (белый фон), иначе наши плитки рисуются поверх.
+    // На protocol v3 clear_all сам шлёт STP — экран гаснет до первой заливки.
+    deck.dev
+        .clear_all_button_images()
+        .await
+        .map_err(|e| anyhow!("очистка экрана: {e}"))?;
+    println!("[deck] экран очищен");
+
     let renderer = Renderer::new()?;
     let mut monitor = Monitor::new(cfg.monitor.gpu_index)?;
 
